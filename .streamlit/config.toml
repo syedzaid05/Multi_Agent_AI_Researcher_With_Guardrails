@@ -1,11 +1,13 @@
 # Streamlit configuration (applies locally and on Streamlit Community Cloud)
 
+# "dark" keeps Streamlit's native widgets consistent with the custom
+# purple/cyan dark gradient theme injected via CSS in app.py.
 [theme]
-base = "light"
-primaryColor = "#4F8BF9"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F0F2F6"
-textColor = "#262730"
+base = "dark"
+primaryColor = "#7c5cff"
+backgroundColor = "#0b1020"
+secondaryBackgroundColor = "#131a30"
+textColor = "#e6e9f5"
 
 [browser]
 gatherUsageStats = false
