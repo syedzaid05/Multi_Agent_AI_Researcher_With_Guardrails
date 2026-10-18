@@ -21,6 +21,7 @@ The pipeline can run either as an interactive **Streamlit web app** or from the
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Configuration](#configuration)
+- [Deploy to Streamlit Cloud](#deploy-to-streamlit-cloud)
 - [Usage](#usage)
   - [Web app (Streamlit)](#web-app-streamlit)
   - [Command line](#command-line)
@@ -210,7 +211,44 @@ MIN_QUERY_LEN="3"
 ```
 
 `src/config.py` loads this file via `python-dotenv` and `require_keys()` reports any
-missing required keys before the pipeline runs.
+missing required keys before the pipeline runs. On Streamlit Cloud, the same values are
+read from `st.secrets` instead (see [Deploy to Streamlit Cloud](#deploy-to-streamlit-cloud)).
+
+---
+
+## Deploy to Streamlit Cloud
+
+This repo is configured for [Streamlit Community Cloud](https://share.streamlit.io):
+
+- `app.py` is the entry point.
+- `.python-version` pins Python 3.12.
+- `.streamlit/config.toml` applies the UI theme.
+- `src/config.py` reads settings from `.env` (local) **or** `st.secrets` (Cloud), so no
+  code changes are needed when deploying.
+
+### Steps
+
+1. Push this repository to GitHub (`.env` and `.streamlit/secrets.toml` are gitignored
+   and will not be uploaded).
+2. Go to **https://share.streamlit.io** and sign in with your GitHub account.
+3. Click **Create app** (or **New app**) → **Paste repo URL** and select:
+   - Repository: `syedzaid05/Multi_Agent_AI_Researcher_With_Guardrails`
+   - Branch: `main`
+   - Main file path: `app.py`
+4. Expand **Advanced settings**:
+   - Set the Python version to **3.12** (matches `.python-version`).
+   - In the **Secrets** box, paste:
+     ```toml
+     GROQ_API_KEY = "your-groq-api-key"
+     GEMINI_API_KEY = "your-gemini-api-key"
+     TAVILY_API_KEY = "your-tavily-api-key"
+     ```
+5. Click **Deploy**. First deployment builds dependencies for a few minutes; later
+   pushes to `main` redeploy automatically.
+
+Secrets can be edited later under **App menu → Settings → Secrets**; changing them
+reboots the app. See `.streamlit/secrets.toml.example` for the full list of optional
+overrides (`PLANNER_MODEL`, `MAX_QUERY_LEN`, etc.).
 
 ---
 
@@ -287,8 +325,8 @@ The CLI prints the final answer, plan, references, cited ids, and guardrail note
 
 ## Troubleshooting
 
-- **"Missing API keys in .env"** — ensure `GROQ_API_KEY`, `GEMINI_API_KEY`, and
-  `TAVILY_API_KEY` are set in `.env`.
+- **"Missing API keys"** — set `GROQ_API_KEY`, `GEMINI_API_KEY`, and `TAVILY_API_KEY`
+  in `.env` locally, or in Streamlit secrets (App menu → Settings → Secrets) on Cloud.
 - **Gemini fallback warning on stderr** — the critic/synthesis stage fell back to Groq;
   this is expected when Gemini is unavailable.
 - **No references / empty results** — search providers may be rate-limited or blocked;

@@ -45,7 +45,7 @@ st.caption(
 
 missing = require_keys()
 if missing:
-    st.error("Missing API keys in .env: " + ", ".join(missing))
+    st.error("Missing API keys. Set them in `.env` (local) or in Streamlit secrets (Cloud): " + ", ".join(missing))
     st.stop()
 
 with st.sidebar:
@@ -55,7 +55,7 @@ with st.sidebar:
     st.write(f"Critic: `{CRITIC_MODEL}`")
     st.write(f"Synthesis: `{SYNTHESIS_MODEL}`")
     st.divider()
-    st.write("Set overrides in `.env`.")
+    st.write("Set overrides in `.env` (local) or Streamlit secrets (Cloud).")
 
 query = st.text_area(
     "Research question",
